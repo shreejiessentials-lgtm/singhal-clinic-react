@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">Business Assistant Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF7F0;
+    --ink:#1F2A24;
+    --primary:#2F4B3C;
+    --primary-light:#3E6350;
+    --accent:#C99A3D;
+    --card:#FFFFFF;
+    --line:#E4DDCB;
+    --muted:#6B7268;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Work Sans',sans-serif;line-height:1.5;}
+  h1,h2,h3{font-family:'Fraunces',serif;font-weight:600;margin:0;color:var(--primary);}
+  a{color:inherit;}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px;}
+  nav{display:flex;justify-content:space-between;align-items:center;padding:20px 0;}
+  .brand{font-family:'Fraunces',serif;font-weight:600;font-size:1.3rem;color:var(--primary);}
+  .nav-links{display:flex;gap:28px;font-size:0.92rem;color:var(--muted);}
+  .hero{padding:64px 0 40px;display:grid;grid-template-columns:1.1fr 0.9fr;gap:48px;align-items:center;}
+  .eyebrow{font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:14px;}
+  .hero h1{font-size:2.6rem;line-height:1.15;margin-bottom:18px;}
+  .hero p.sub{color:var(--muted);font-size:1.05rem;max-width:440px;margin-bottom:28px;}
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap;}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:8px;font-weight:600;font-size:0.95rem;cursor:pointer;border:none;text-decoration:none;}
+  .btn-primary{background:var(--primary);color:#fff;}
+  .btn-primary:hover{background:var(--primary-light);}
+  .btn-ghost{background:transparent;color:var(--primary);border:1.5px solid var(--line);}
+  .flow{margin-top:36px;display:flex;align-items:center;gap:0;border-top:1px solid var(--line);padding-top:22px;}
+  .flow-step{display:flex;align-items:center;gap:10px;flex:1;}
+  .flow-num{width:26px;height:26px;border-radius:50%;background:var(--card);border:1.5px solid var(--accent);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:0.78rem;font-weight:600;flex-shrink:0;}
+  .flow-label{font-size:0.85rem;color:var(--muted);}
+  .flow-line{height:1px;background:var(--line);flex:0.4;}
+  .hero-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px;box-shadow:0 18px 40px -20px rgba(31,42,36,0.18);}
+  .hero-card-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+  .dot{width:9px;height:9px;border-radius:50%;background:#4CAF7D;}
+  .hero-card-head span{font-size:0.85rem;color:var(--muted);}
+  .msg{padding:10px 14px;border-radius:10px;font-size:0.9rem;margin-bottom:10px;max-width:85%;}
+  .msg.bot{background:#F1ECDE;color:var(--ink);}
+  .msg.user{background:var(--primary);color:#fff;margin-left:auto;}
+  .section{padding:56px 0;}
+  .section-head{margin-bottom:32px;max-width:520px;}
+  .section-head .eyebrow{margin-bottom:8px;}
+  .section-head h2{font-size:1.9rem;}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px;}
+  .card h3{font-size:1.05rem;margin-bottom:8px;}
+  .card p{color:var(--muted);font-size:0.9rem;margin:0;}
+  .info-strip{background:var(--primary);color:#fff;border-radius:16px;padding:36px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .info-strip .eyebrow{color:#E8D9AE;}
+  .info-strip h3{color:#fff;font-size:1rem;margin-bottom:6px;}
+  .info-strip p{color:#D8DED6;font-size:0.9rem;margin:0;}
+  footer{padding:32px 0;border-top:1px solid var(--line);color:var(--muted);font-size:0.85rem;text-align:center;}
+  #chat-toggle{position:fixed;bottom:24px;right:24px;width:58px;height:58px;border-radius:50%;background:var(--primary);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 28px -8px rgba(47,75,60,0.55);font-size:1.4rem;z-index:1000;}
+  #chat-panel{position:fixed;bottom:96px;right:24px;width:340px;max-width:88vw;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 60px -20px rgba(31,42,36,0.35);display:none;flex-direction:column;overflow:hidden;z-index:1000;}
+  #chat-panel.open{display:flex;}
+  #chat-head{background:var(--primary);color:#fff;padding:14px 18px;font-family:'Fraunces',serif;font-weight:600;}
+  #chat-head small{display:block;font-family:'Work Sans',sans-serif;font-weight:400;color:#CFE0D5;font-size:0.78rem;margin-top:2px;}
+  #chat-body{padding:16px;height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;}
+  #chat-body .msg{max-width:88%;}
+  .whatsapp-btn{display:inline-flex;align-items:center;gap:6px;background:#25D366;color:#fff;padding:9px 14px;border-radius:8px;text-decoration:none;font-size:0.85rem;font-weight:600;margin-top:4px;}
+  #chat-input-row{display:flex;border-top:1px solid var(--line);}
+  #chat-input{flex:1;border:none;padding:13px 14px;font-family:'Work Sans',sans-serif;font-size:0.9rem;outline:none;}
+  #chat-send{border:none;background:var(--accent);color:#fff;padding:0 18px;cursor:pointer;font-weight:600;}
+  @media (max-width:760px){.hero{grid-template-columns:1fr;}.grid-3{grid-template-columns:1fr;}.info-strip{grid-template-columns:1fr;}.flow{display:none;}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav>
+    <div class="brand" id="brand-name">Loading…</div>
+    <div class="nav-links">
+      <span id="nav-hours">—</span>
+      <span id="nav-location">—</span>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div>
+      <div class="eyebrow" id="eyebrow-trust">Loading…</div>
+      <h1>Skip the wait.<br>Ask before you visit.</h1>
+      <p class="sub" id="hero-sub">Our assistant answers questions instantly and books your slot on WhatsApp in one tap.</p>
+      <div class="cta-row">
+        <button class="btn btn-primary" onclick="openChat()">Chat with assistant</button>
+        <a class="btn btn-ghost" href="#services">See services</a>
+      </div>
+      <div class="flow">
+        <div class="flow-step"><div class="flow-num">1</div><div class="flow-label">Chat</div></div>
+        <div class="flow-line"></div>
+        <div class="flow-step"><div class="flow-num">2</div><div class="flow-label">Confirm slot</div></div>
+        <div class="flow-line"></div>
+        <div class="flow-step"><div class="flow-num">3</div><div class="flow-label">Visit</div></div>
+      </div>
+    </div>
+
+    <div class="hero-card">
+      <div class="hero-card-head"><div class="dot"></div><span>Assistant · online now</span></div>
+      <div class="msg bot" id="hero-msg-1">Hi, how can I help you today?</div>
+      <div class="msg user" id="hero-msg-2">I'd like to know more</div>
+      <div class="msg bot" id="hero-msg-3">Loading…</div>
+    </div>
+  </section>
+
+  <section class="section" id="services">
+    <div class="section-head">
+      <div class="eyebrow">What we offer</div>
+      <h2>Our services</h2>
+    </div>
+    <div class="grid-3" id="services-grid">
+      <div class="card"><h3>Loading…</h3><p>&nbsp;</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="info-strip">
+      <div>
+        <div class="eyebrow" id="info-eyebrow-1">Contact</div>
+        <h3 id="info-staff">—</h3>
+        <p id="info-type">—</p>
+      </div>
+      <div>
+        <div class="eyebrow">Timings</div>
+        <h3 id="info-timings">—</h3>
+        <p id="info-days">—</p>
+      </div>
+      <div>
+        <div class="eyebrow">Location</div>
+        <h3 id="info-address">—</h3>
+        <p id="info-landmark">—</p>
+      </div>
+    </div>
+  </section>
+
+  <footer id="footer-text">This is a sample assistant demo — not the live site.</footer>
+</div>
+
+<button id="chat-toggle" onclick="toggleChat()">💬</button>
+<div id="chat-panel">
+  <div id="chat-head" id="chat-head-title">Assistant<small>Usually replies instantly</small></div>
+  <div id="chat-body">
+    <div class="msg bot" id="chat-welcome">Hi, how can I help you today?</div>
+  </div>
+  <div id="chat-input-row">
+    <input id="chat-input" placeholder="Type your message..." onkeydown="if(event.key==='Enter')sendMessage()">
+    <button id="chat-send" onclick="sendMessage()">Send</button>
+  </div>
+</div>
+
+<script>
+  const CHAT_ENDPOINT = "/api/chat";
+  let WHATSAPP_NUMBER = "";
+  let history = [];
+
+  // ---- Load business config on page load and populate the page ----
+  async function loadConfig(){
+    try{
+      const res = await fetch('/api/config');
+      const cfg = await res.json();
+
+      WHATSAPP_NUMBER = cfg.whatsapp || "";
+
+      document.getElementById('page-title').textContent = cfg.name + " — Book in seconds";
+      document.getElementById('brand-name').textContent = cfg.name;
+      document.getElementById('nav-hours').textContent = cfg.timings ? "Open · " + cfg.timings : "";
+      document.getElementById('nav-location').textContent = cfg.landmark || cfg.address;
+
+      document.getElementById('eyebrow-trust').textContent =
+        [cfg.rating, cfg.address].filter(Boolean).join(' · ');
+
+      document.getElementById('hero-msg-3').textContent = cfg.staff
+        ? `${cfg.staff} is available — want me to book a slot on WhatsApp?`
+        : `We're available now — want me to book a slot on WhatsApp?`;
+
+      document.getElementById('info-staff').textContent = cfg.staff || cfg.name;
+      document.getElementById('info-type').textContent = cfg.type || '';
+      document.getElementById('info-timings').textContent = cfg.timings || '—';
+      document.getElementById('info-days').textContent = cfg.days || '';
+      document.getElementById('info-address').textContent = cfg.address || '—';
+      document.getElementById('info-landmark').textContent = cfg.landmark || '';
+
+      document.getElementById('footer-text').textContent = `${cfg.name} · This is a sample assistant demo — not the live site.`;
+
+      // Services grid
+      const grid = document.getElementById('services-grid');
+      grid.innerHTML = '';
+      (cfg.servicesList || []).forEach(s => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `<h3></h3><p></p>`;
+        div.querySelector('h3').textContent = s.title;
+        div.querySelector('p').textContent = s.desc || '';
+        grid.appendChild(div);
+      });
+      if((cfg.servicesList || []).length === 0){
+        grid.innerHTML = '<div class="card"><h3>Set BIZ_SERVICES env var</h3><p>Format: Title::Description; Title::Description</p></div>';
+      }
+    }catch(err){
+      console.error('Failed to load config:', err);
+    }
+  }
+  loadConfig();
+
+  function openChat(){ document.getElementById('chat-panel').classList.add('open'); }
+  function toggleChat(){ document.getElementById('chat-panel').classList.toggle('open'); }
+
+  function appendMessage(text, sender){
+    const body = document.getElementById('chat-body');
+    const div = document.createElement('div');
+    div.className = 'msg ' + sender;
+    div.textContent = text;
+    body.appendChild(div);
+    body.scrollTop = body.scrollHeight;
+    return div;
+  }
+
+  function appendWhatsappButton(prefilledText){
+    if(!WHATSAPP_NUMBER) return;
+    const body = document.getElementById('chat-body');
+    const a = document.createElement('a');
+    a.className = 'whatsapp-btn';
+    a.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(prefilledText)}`;
+    a.target = '_blank';
+    a.textContent = '📅 Book on WhatsApp';
+    body.appendChild(a);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  async function sendMessage(){
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if(!text) return;
+    appendMessage(text, 'user');
+    history.push({role:'user', content:text});
+    input.value = '';
+    const thinking = appendMessage('...', 'bot');
+
+    try{
+      const res = await fetch(CHAT_ENDPOINT, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ history })
+      });
+      const data = await res.json();
+      thinking.textContent = data.reply;
+      history.push({role:'assistant', content:data.reply});
+      if(data.action === 'book_appointment'){
+        appendWhatsappButton(data.whatsapp_message || `Hi, I'd like to book an appointment.`);
+      }
+    }catch(err){
+      thinking.textContent = "Sorry, I'm having trouble connecting right now. Please WhatsApp us directly.";
+      appendWhatsappButton("Hi, I'd like to book an appointment.");
+    }
+  }
+</script>
+
+</body>
+</html>
